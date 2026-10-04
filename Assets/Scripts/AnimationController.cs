@@ -4,10 +4,6 @@ using System.Collections;
 public class AnimationController : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-
-    }
 
     public Animator animator;     // Reference to the Animator component
     public string PullCharacter; // Name of the animation trigger or state
@@ -20,14 +16,83 @@ public class AnimationController : MonoBehaviour
     public BallContoller scriptB;
     // public Transform FieldHighlighter;
     public Vector3 FieldPosition;
+    private bool isDragging = false;
+    private Vector2 startTouchPosition;
+    private Vector2 endTouchPosition;
+    public LineRenderer trajectoryLine;
+    public int linePoints = 25; // Number of points in trajectory line
+    public float timeStep = 0.05f;
+    public float lineLength = 3f;
+    public Camera mainCamera;
+
+    void Start()
+    {
+        trajectoryLine.enabled = false;
+    }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.L))
+        // if (Input.GetKeyDown(KeyCode.L))
+        // {
+        //     // StartCoroutine(PullShot());
+        //     animationSelector();
+        // }
+        HandleInput();
+        // animationSelector();
+       
+    }
+
+    void HandleInput()
+    {
+        if (Input.GetMouseButtonDown(0)) // Touch or mouse click start
         {
-            // StartCoroutine(PullShot());
-            animationSelector();
+            startTouchPosition = GetWorldPoint(Input.mousePosition);
+            Debug.Log(startTouchPosition);
+            isDragging = true;
+            trajectoryLine.enabled = true;
         }
+
+        if (Input.GetMouseButtonUp(0) && isDragging) // Touch or mouse release
+        {
+            Vector2 currentTouchPosition = GetWorldPoint(Input.mousePosition);
+            Vector2 dragDirection = (startTouchPosition - currentTouchPosition).normalized; // Get direction
+
+            DrawTrajectory(dragDirection);// Draw a line from the start to the end of the drag
+            Debug.Log(dragDirection);
+        }
+
+        if (Input.GetMouseButtonUp(0) && isDragging) // Touch or mouse release
+        {
+            endTouchPosition = Input.mousePosition;
+            Debug.Log(endTouchPosition);
+            isDragging = false;
+            animationSelector();
+            trajectoryLine.enabled = false;
+        }
+    }
+
+    void DrawTrajectory(Vector2 direction)
+    {
+        Vector3 ballPosition = transform.position; // Start point (ball position)
+        Vector3 endPosition = ballPosition + new Vector3(direction.x, 0, direction.y) * lineLength; // End point (scaled direction)
+
+        trajectoryLine.positionCount = 2; // Only start and end points
+        trajectoryLine.SetPosition(0, ballPosition);
+        trajectoryLine.SetPosition(1, endPosition);
+    }
+
+    Vector2 GetWorldPoint(Vector2 screenPoint)
+    {
+        Ray ray = mainCamera.ScreenPointToRay(screenPoint);
+        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+        float rayDistance;
+
+        if (groundPlane.Raycast(ray, out rayDistance))
+        {
+            return ray.GetPoint(rayDistance);
+        }
+
+        return Vector2.zero; // Fallback
     }
 
     void animationSelector()

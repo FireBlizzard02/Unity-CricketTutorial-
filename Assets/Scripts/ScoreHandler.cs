@@ -18,6 +18,7 @@ public class ScoreHandler : MonoBehaviour
     public TMP_Text Wicket;
     public TMP_Text Target;
     public TMP_Text RemainingBalls;
+    private bool isDragging = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -32,8 +33,24 @@ public class ScoreHandler : MonoBehaviour
         myButton1.onClick.AddListener(() => LoftedButtonClick());
         myButton2.onClick.AddListener(() => NormalButtonClick());
 
-        if (Input.GetKeyDown(KeyCode.L))
+        // if (Input.GetKeyDown(KeyCode.L))
+        // {
+        //     Invoke("ScoreDecider", 3f);
+        // }
+        HandleInput();
+    }
+    void HandleInput()
+    {
+        if (Input.GetMouseButtonDown(0)) // Touch or mouse click start
         {
+            // startTouchPosition = Input.mousePosition;
+            isDragging = true;
+        }
+
+        if (Input.GetMouseButtonUp(0) && isDragging) // Touch or mouse release
+        {
+            // endTouchPosition = Input.mousePosition;
+            isDragging = false;
             Invoke("ScoreDecider", 3f);
         }
     }
@@ -200,7 +217,8 @@ public class ScoreHandler : MonoBehaviour
         Target.text = $"{target}";
     }
 
-    public void UpdateRemainingBallsUI(){
+    public void UpdateRemainingBallsUI()
+    {
         RemainingBalls.text = $"{ballsLeft}";
     }
 }

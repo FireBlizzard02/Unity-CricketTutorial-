@@ -22,17 +22,10 @@ public class TimingMeter : MonoBehaviour
     public int blueArea;
     public int greenArea;
     [SerializeField] public BallHighlight script;
+    private bool isDragging = false;
     void Start()
     {
-
-        // int Line = script.ballLine; // Call the function to get the value
-        // Debug.Log("The Line is: " + Line);
-
-        // int ballLength = script.Length;
-        // Debug.Log($"The Length is:{ballLength}");
-
         MeterSelection();
-
     }
 
     void Update()
@@ -46,24 +39,10 @@ public class TimingMeter : MonoBehaviour
         // }
         // Invoke("MeterSelection", 3f);
 
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            // timer += Time.deltaTime;
-            // if (timer >= interval)
-            // {
-            //     MeterSelection();
-            //     timer = 0f;
-            // }
-            Invoke("MeterSelection", 4f);
-        }
-
-        // timer += Time.deltaTime;
-        // if (timer >= interval){
-        //     MeterSelection();
-        //     timer = 0f;
+        // if (Input.GetKeyDown(KeyCode.L))
+        // {
+        //     Invoke("MeterSelection", 4f);
         // }
-
-
 
         if (isStopped || movingBar == null || meter == null) return;
 
@@ -95,14 +74,42 @@ public class TimingMeter : MonoBehaviour
         // Apply the new position
         movingBar.anchoredPosition = new Vector2(movingBar.anchoredPosition.x, barY);
 
-        if (Input.GetKeyDown(KeyCode.L))
+        // if (Input.GetKeyDown(KeyCode.L))
+        // {
+        //     CheckTiming();
+        //     isStopped = true;
+        //     Invoke("resetValues",4f);
+        //     // Debug.Log("Meter Stopped at Y Position: " + barY);
+        // }
+        HandleInput();
+
+    }
+    void HandleInput()
+    {
+        if (Input.GetMouseButtonDown(0)) // Touch or mouse click start
         {
+            // startTouchPosition = Input.mousePosition;
+            isDragging = true;
+        }
+
+        if (Input.GetMouseButtonUp(0) && isDragging) // Touch or mouse release
+        {
+            // endTouchPosition = Input.mousePosition;
+            isDragging = false;
+            Invoke("MeterSelection", 4f);
+
             CheckTiming();
             isStopped = true;
             Invoke("resetValues",4f);
-            // Debug.Log("Meter Stopped at Y Position: " + barY);
         }
-
+        // if (Input.GetMouseButtonUp(0) && isDragging) // Touch or mouse release
+        // {
+        //     // endTouchPosition = Input.mousePosition;
+        //     isDragging = false;
+        //     CheckTiming();
+        //     isStopped = true;
+        //     Invoke("resetValues",4f);
+        // }
     }
 
     public void resetValues()

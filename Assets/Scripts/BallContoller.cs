@@ -20,6 +20,7 @@ public class BallContoller : MonoBehaviour
     public int FastBallVariation;
     // private float timer = 0f;
     // private float interval = 5f;
+    private bool isDragging = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -30,43 +31,31 @@ public class BallContoller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.L)){
-            Invoke("AutoBall", 1.5f);
+        // if (Input.GetKeyDown(KeyCode.L))
+        // {
+        //     Invoke("AutoBall", 1.5f);
+        // }
+        HandleInput();
+    }
+    void HandleInput()
+    {
+        if (Input.GetMouseButtonDown(0)) // Touch or mouse click start
+        {
+            // startTouchPosition = Input.mousePosition;
+            isDragging = true;
         }
 
-        // Invoke("AutoBall", 5f);
-        // if (!taskScheduled && Input.GetKeyDown(KeyCode.T))
-        // {
-        //     if (ballType == 0)
-        //     {
-        //         FastBowler();
-        //         Invoke("Spawn", 5f);
-        //         taskScheduled = true;
-        //         if (ballCount == 6)
-        //         {
-        //             Debug.Log("Over Finished!");
-        //             ballCount = 0;
-        //             ballType = 1;
-        //         }
-        //     }
-
-        //     else if (ballType == 1)
-        //     {
-        //         SpinBowler();
-        //         Invoke("Spawn", 5f);
-        //         taskScheduled = true;
-        //         if (ballCount == 6)
-        //         {
-        //             Debug.Log("Over Finished!");
-        //             ballCount = 0;
-        //             ballType = 0;
-        //         }
-        //     }
-        // }
+        if (Input.GetMouseButtonUp(0) && isDragging) // Touch or mouse release
+        {
+            // endTouchPosition = Input.mousePosition;
+            isDragging = false;
+            Invoke("AutoBall", 1.5f);
+        }
     }
 
-    private void AutoBall(){
-        if (!taskScheduled )
+    private void AutoBall()
+    {
+        if (!taskScheduled)
         {
             if (ballType == 0)
             {

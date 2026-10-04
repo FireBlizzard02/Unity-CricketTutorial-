@@ -16,6 +16,7 @@ public class BallHighlight : MonoBehaviour
 
     // private float timer = 0f;
     // private float interval = 4.5f;
+    private bool isDragging = false;
 
     void Start()
     {
@@ -28,27 +29,27 @@ public class BallHighlight : MonoBehaviour
 
     void Update()
     {
-        // if (Input.GetKeyDown(KeyCode.T))
+        // if (Input.GetKeyDown(KeyCode.L))
         // {
-
-        //     Invoke("highlighterPosition", 2f);
-
+        //     Invoke("highlighterPosition", 4f);
         // }
-        // Invoke("highlighterPosition", 2f);
-
-        if (Input.GetKeyDown(KeyCode.L))
-        {   
-            Invoke("highlighterPosition", 4f);
+        HandleInput();
+    }
+    void HandleInput()
+    {
+        if (Input.GetMouseButtonDown(0)) // Touch or mouse click start
+        {
+            // startTouchPosition = Input.mousePosition;
+            isDragging = true;
         }
 
-        // timer += Time.deltaTime;
-        // if (timer >= interval){
-        //     highlighterPosition();
-        //     timer = 0f;
-        // }
-
+        if (Input.GetMouseButtonUp(0) && isDragging) // Touch or mouse release
+        {
+            // endTouchPosition = Input.mousePosition;
+            isDragging = false;
+            Invoke("highlighterPosition", 4f);
+        }
     }
-
     // void UpdateImpactPrediction()
     // {
     //     // Ensure the ball is moving
@@ -72,14 +73,6 @@ public class BallHighlight : MonoBehaviour
     //     Debug.DrawRay(ball.transform.position, ballRigidbody.linearVelocity.normalized * 10, Color.red, 0.5f);
     // }
 
-    // public int BallLine(){
-    //     int Line  = Random.Range(0, 3);
-    //     return Line;
-    // }
-    // public int BallLength(){
-    //     int Length = Random.Range(0,5);
-    //     return Length;
-    // }
     public void highlighterPosition()
     {
         ballLine = Random.Range(0, 3);
